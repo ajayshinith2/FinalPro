@@ -1,0 +1,98 @@
+import pandas as pd
+import xlrd
+import seaborn as sns
+from IPython.core.debugger import set_trace
+import os
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import IsolationForest
+
+df = pd.read_csv (r'C:\Users\Computer\Desktop\project\dataset\tapioca.csv')    
+num=df.shape[0]
+del df["crop"]
+print(num)
+df2 = pd.read_csv (r'C:\Users\Computer\Desktop\project\dataset\carrot.csv')    
+del df2["crop"]
+
+def function(data,data2,i):
+    contamination = (1/df.shape[0])
+    data["season"][40]=data2["season"][i]
+    data["pH"][40]=data2["pH"][i]
+    data["soil_type"][40]=data2["soil_type"][i]
+    data["elevation"][40]=data2["elevation"][i]
+    data["temperature"][40]=data2["temperature"][i]
+    model = IsolationForest(contamination=contamination, n_estimators=1000)
+    model.fit(data)
+    df["iforest"] = pd.Series(model.predict(data))
+    df["iforest"] = df["iforest"].map({1: 0, -1: 1})
+    c=0
+    for i in range (0,num):
+    #if(ans[i]==1):
+        if(df["iforest"][i]==1):
+            return i
+            c+=1
+    print("the count is : ",c)
+
+df = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\carrot.csv')    
+num=df.shape[0]
+
+
+df2 = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\chilli.csv') 
+num2=df2.shape[0]
+df3 = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\cucumber.csv')    
+num=df3.shape[0]
+df4 = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\onion.csv') 
+num2=df4.shape[0]
+df5 = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\pepper.csv')    
+num=df5.shape[0]
+
+df6 = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\tapioca.csv')    
+num=df6.shape[0]
+df7 = pd.read_csv (r'C:\Users\Computer\Desktop\projectDatas\dataset\testData.csv') 
+num2=df7.shape[0]
+
+
+del df["crop"]   
+del df2["crop"]
+del df3["crop"]   
+del df4["crop"]
+del df5["crop"]   
+del df6["crop"]
+#del df7["crop"] 
+
+
+print(num,num2)
+
+data=df.copy()
+data = data.dropna()
+data2=df2.copy()
+data2 = data2.dropna()
+
+data3=df3.copy()
+data3 = data3.dropna()
+data4=df4.copy()
+data4 = data4.dropna()
+
+data5=df5.copy()
+data5 = data5.dropna()
+data6=df6.copy()
+data6 = data6.dropna()
+
+data7=df7.copy()
+del data7["crop"]
+data7 = data7.dropna()
+
+ctp=0
+for i in range(2):
+    ans1=function(data,data7,i)
+    if(ans1==40 and data7['crop'][0]=="carrot"):
+        ctp+=1
+    #ans2=function(data2,data7)
+    #ans3=function(data3,data7)
+    #ans4=function(data4,data7)
+    #ans5=function(data5,data7)
+    #ans6=function(data6,data7)
+    print(ans1,ans2,ans3,ans4,ans5)
+    print(ctp)
+
